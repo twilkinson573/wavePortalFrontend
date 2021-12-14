@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import './App.css';
+import abi from "./utils/WavePortal.json";
 
 export default function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
 
   const contractAddress = "0x4c2Df2C4e7B6a391A269509293cfe06ae53342A3";
-  const 
+  const contractAbi = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -65,7 +66,7 @@ export default function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer);
 
         let count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
