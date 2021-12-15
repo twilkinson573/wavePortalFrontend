@@ -13,6 +13,7 @@ export default function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
   const [allWaves, setAllWaves] = useState([]);
+  const [messageInput, setMessageInput] = useState("");
 
   /**
   * Implement your connectWallet method here
@@ -86,7 +87,7 @@ export default function App() {
         /*
         * Execute the actual wave from your smart contract
         */
-        const waveTxn = await wavePortalContract.wave("Default message tho bruh");
+        const waveTxn = await wavePortalContract.wave(messageInput);
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
@@ -96,6 +97,7 @@ export default function App() {
         console.log("Retrieved total wave count...", count.toNumber());
 
         getAllWaves();
+        setMessageInput("");
 
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -155,11 +157,14 @@ export default function App() {
         </div>
 
         {currentAccount ? (
-          <button className="waveButton" onClick={wave}>
-            Wave at Me
-          </button>
+          <div>
+            <input type="text" value={messageInput} onChange={e => setMessageInput(e.target.value)} />
+            <button className="waveButton" onClick={wave} disabled={messageInput == ""} >
+              Wave at Me
+            </button>
+          </div>
         ) : (
-          <button className="waveButton" onClick={connectWallet}>
+          <button className="waveButton" onClick={connectWallet} >
             Connect Wallet
           </button>
         )}
