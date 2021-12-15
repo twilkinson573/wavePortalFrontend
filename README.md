@@ -1,11 +1,16 @@
-# buildspace Wave Portal 👋 
+# WavePortal 👋 
 
 ### **Welcome!**
-To get started with this course, clone this repo and follow these commands:
+To get started, clone this repo and follow these commands:
 
 1. Run `npm install` at the root of your directory
-2. Run `npm run start` to start the project
-3. Start coding!
+2. Add the correct contract address (localhost, rinkeby etc) in `App.js`
+3. Create a symlink to your WavePortal Hardhat project to make the contract dev abi file available:
+```
+ln -s /..absolutePathToHardhatProject../wavePortal/artifacts/contracts/WavePortal.sol/WavePortal.json ./src/utils/WavePortalDev.json
+```
+4. Run `npm run start` to start the project
 
-### **Questions?**
-Have some questions make sure you head over to your [buildspace Dashboard](https://app.buildspace.so/courses/CO02cf0f1c-f996-4f50-9669-cf945ca3fb0b) and link your Discord account so you can get access to helpful channels and your instructor!
+
+
+

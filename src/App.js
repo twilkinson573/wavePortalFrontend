@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import './App.css';
-import abi from "./utils/WavePortal.json";
+// import abi from "./utils/WavePortal.json"; // Deploys
+import abi from "./utils/WavePortalDev.json"; // Local Dev (create symlink to WavePortal.json artifact in your Hardhat project)
 
 export default function App() {
 
-  const [currentAccount, setCurrentAccount] = useState("");
 
-  const contractAddress = "0x4c2Df2C4e7B6a391A269509293cfe06ae53342A3";
+  // const contractAddress = "0x4c2Df2C4e7B6a391A269509293cfe06ae53342A3";    // Rinkeby
+  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";  // Localhost
   const contractAbi = abi.abi;
+
+  const [currentAccount, setCurrentAccount] = useState("");
+  const [allWaves, setAllWaves] = useState([]);
+
+
 
   const checkIfWalletIsConnected = async () => {
     try {
