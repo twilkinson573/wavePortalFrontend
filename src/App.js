@@ -6,18 +6,14 @@ import abi from "./utils/WavePortalDev.json"; // Local Dev (create symlink to Wa
 
 export default function App() {
 
-
   // const contractAddress = "0x4c2Df2C4e7B6a391A269509293cfe06ae53342A3";    // Rinkeby
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";  // Localhost
+  const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";  // Localhost
   const contractAbi = abi.abi;
 
   const [currentAccount, setCurrentAccount] = useState("");
   const [allWaves, setAllWaves] = useState([]);
   const [messageInput, setMessageInput] = useState("");
 
-  /**
-  * Implement your connectWallet method here
-  */
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -83,11 +79,9 @@ export default function App() {
 
         let count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
-
-        /*
-        * Execute the actual wave from your smart contract
-        */
-        const waveTxn = await wavePortalContract.wave(messageInput);
+        
+        // Execute the actual wave from your smart contract, add gas limit of 300,000 
+        const waveTxn = await wavePortalContract.wave(messageInput, { gasLimit: 300_000 });
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
@@ -96,7 +90,6 @@ export default function App() {
         count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
 
-        getAllWaves();
         setMessageInput("");
 
       } else {
@@ -143,6 +136,36 @@ export default function App() {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
+
+  useEffect(() => {
+    let wavePortalContract;
+
+    const onNewWave = (from, message, timestamp) => {
+      console.log('NewWave', from, timestamp, message);
+      setAllWaves(prevState => [
+        ...prevState,
+        {
+          address: from,
+          timestamp: new Date(timestamp * 1000),
+          message: message,
+        }
+      ]);
+    };
+
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer);
+      wavePortalContract.on('NewWave', onNewWave);
+    }
+
+    return () => {
+      if (wavePortalContract) {
+        wavePortalContract.off('NewWave', onNewWave);
+      }
+    };
+  }, []);
   
   return (
     <div className="mainContainer">
